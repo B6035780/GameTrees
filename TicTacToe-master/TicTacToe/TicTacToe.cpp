@@ -134,7 +134,7 @@ void TicTacToe::search() {
 				if (children[p]->v < min)
 				{
 					min = children[p]->v;
-					if (min <= alpha) //pruning
+					if (min <= alpha)
 					{
 						v = min;
 						return;
