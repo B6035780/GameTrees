@@ -73,38 +73,21 @@ bool play(TicTacToe *it) {
             }
         } else {
             // Computer move       
-			if (human == TicTacToe::MAX)
-			{
-				TicTacToe::smallint min = TicTacToe::INF;
-				for (TicTacToe::smallint p = 0; p < TicTacToe::N_POS; ++p)
-				{
-					if (it->s[p] == TicTacToe::ZERO)
-					{
-						TicTacToe *child = it->get_child(p);
-						if (child->get_v() < min)
-						{
-							min = child->get_v();
-							move = p;
-						}
-					}
-				}
-			}
-			else
-			{
 				TicTacToe::smallint max = -TicTacToe::INF;
 				for (TicTacToe::smallint p = 0; p < TicTacToe::N_POS; ++p)
 				{
 					if (it->s[p] == TicTacToe::ZERO)
 					{
 						TicTacToe *child = it->get_child(p);
-						if (child->get_v() > max)
+						TicTacToe::smallint a = -1 * child->get_v();
+						if ( a > max)
 						{
-							max = child->get_v();
+							max = a;
 							move = p;
 						}
 					}
 				}
-			}
+			
             cout << "Computer move: " << move << endl;
         }
         it = it->get_child(move);
