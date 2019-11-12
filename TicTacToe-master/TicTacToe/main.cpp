@@ -3,6 +3,7 @@
 #include <iostream>
 #include <ios>
 #include <chrono>
+#include <random>
 #include "TicTacToe.h"
 
 using std::cout;
@@ -10,7 +11,15 @@ using std::cin;
 using std::endl;
 using std::flush;
 
+std::mt19937 random_number_engine(time(0));
+
 bool play(TicTacToe *it);
+
+int RandomNumberGenerator(int min, int max)
+{
+	std::uniform_int_distribution<int> distribution(min, max);
+	return distribution(random_number_engine);
+}
 
 int main() {
     cout << "Solving Tic-tac-toe using minimax search " << endl;
@@ -59,8 +68,7 @@ bool play(TicTacToe *it) {
         int move;
         if (it->get_turn() == human) {
             // Human move
-            cout << "Your move: " << flush;
-            for (;;) {
+           /* for (;;) {
                 cin >> move;
                 if (0 <= move && move < TicTacToe::N_POS &&
                         it->s[move] == TicTacToe::ZERO)
@@ -70,42 +78,93 @@ bool play(TicTacToe *it) {
                     cin.clear();
                     cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 }
-            }
-        } else {
-            // Computer move       
-			if (human == TicTacToe::MAX)
+            }*/
+			if (it->move == -1)
 			{
-				TicTacToe::smallint min = TicTacToe::INF;
-				for (TicTacToe::smallint p = 0; p < TicTacToe::N_POS; ++p)
-				{
-					if (it->s[p] == TicTacToe::ZERO)
-					{
-						TicTacToe *child = it->get_child(p);
-						if (child->get_v() < min)
-						{
-							min = child->get_v();
-							move = p;
-						}
-					}
-				}
+				if (human == TicTacToe::MAX)
+					move = RandomNumberGenerator(0, 8);
 			}
 			else
 			{
-				TicTacToe::smallint max = -TicTacToe::INF;
-				for (TicTacToe::smallint p = 0; p < TicTacToe::N_POS; ++p)
+				if (human == TicTacToe::MIN)
 				{
-					if (it->s[p] == TicTacToe::ZERO)
+					TicTacToe::smallint min = TicTacToe::INF;
+					for (TicTacToe::smallint p = 0; p < TicTacToe::N_POS; ++p)
 					{
-						TicTacToe *child = it->get_child(p);
-						if (child->get_v() > max)
+						if (it->s[p] == TicTacToe::ZERO)
 						{
-							max = child->get_v();
-							move = p;
+							TicTacToe *child = it->get_child(p);
+							if (child->get_v() < min)
+							{
+								min = child->get_v();
+								move = p;
+							}
+						}
+					}
+				}
+				else
+				{
+					TicTacToe::smallint max = -TicTacToe::INF;
+					for (TicTacToe::smallint p = 0; p < TicTacToe::N_POS; ++p)
+					{
+						if (it->s[p] == TicTacToe::ZERO)
+						{
+							TicTacToe *child = it->get_child(p);
+							if (child->get_v() > max)
+							{
+								max = child->get_v();
+								move = p;
+							}
 						}
 					}
 				}
 			}
-            cout << "Computer move: " << move << endl;
+			
+			cout << "Computer 1 move: " << move << flush;
+        } else {
+            // Computer move       
+			if (it->move == -1)
+			{
+				if (human == TicTacToe::MIN)
+					move = RandomNumberGenerator(0, 8);
+			}
+			else
+			{
+				if (human == TicTacToe::MAX)
+				{
+					TicTacToe::smallint min = TicTacToe::INF;
+					for (TicTacToe::smallint p = 0; p < TicTacToe::N_POS; ++p)
+					{
+						if (it->s[p] == TicTacToe::ZERO)
+						{
+							TicTacToe *child = it->get_child(p);
+							if (child->get_v() < min)
+							{
+								min = child->get_v();
+								move = p;
+							}
+						}
+					}
+				}
+				else
+				{
+					TicTacToe::smallint max = -TicTacToe::INF;
+					for (TicTacToe::smallint p = 0; p < TicTacToe::N_POS; ++p)
+					{
+						if (it->s[p] == TicTacToe::ZERO)
+						{
+							TicTacToe *child = it->get_child(p);
+							if (child->get_v() > max)
+							{
+								max = child->get_v();
+								move = p;
+							}
+						}
+					}
+				}
+			}
+			
+            cout << "Computer 2 move: " << move << endl;
         }
         it = it->get_child(move);
         if (it->get_depth() == TicTacToe::N_POS || it->is_win()) {
